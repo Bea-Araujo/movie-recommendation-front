@@ -8,13 +8,13 @@ export const Signup = () => {
     let isValidUser = true
     const navigate = useNavigate()
 
+    const [fieldStyle, setFieldStyle] = useState([{}, {}, {}])
+
     const [data, setData] = useState({
         username: '',
         password: '',
         confirmPassword: ''
     })
-
-    const [fieldStyle, setFieldStyle] = useState([{}, {}, {}])
 
     const fields = [
         {
@@ -33,8 +33,6 @@ export const Signup = () => {
             keyValue: 'confirmPassword',
         }
     ]
-
-
 
     function handleChange(value, keyValue) {
         setData({ ...data, [keyValue]: value })
