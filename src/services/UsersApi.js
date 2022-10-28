@@ -9,3 +9,7 @@ export const getUsers = async () => {
     console.log(resp.data)
     return resp.data;
 }
+
+export const postNewUser = async (body) => {
+    await api.post(`/user/new`, body)
+}
