@@ -6,7 +6,6 @@ import { TitleCard } from '../../components/TitleCard/TitleCard'
 export const Feed = () => {
     return (
         <div className={s.container_main}>
-            Feed
             <Sidebar />
 
             <TitleCard />
