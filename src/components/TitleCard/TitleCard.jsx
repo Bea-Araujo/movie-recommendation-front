@@ -62,14 +62,14 @@ export const TitleCard = ({ postid, status, title, followers, setListener }) => 
                     {text}
                 </p>
 
-                <p className={s.close_btn} style={{ gridArea: 'close' }} onClick={
+                <p className={s.close_btn} style={{ gridArea: 'close', display: isClosed ? 'none' : 'block' }} onClick={
                     (e) => {
                         setIsClosed(true)
                         setText('CLOSED')
                         closePool(postid)
                     }
                 }>
-                    {isClosed ? ' ' : 'CLOSE'}
+                    {isClosed ? '' : 'CLOSE'}
                 </p>
 
                 {/* botão para deletar */}
