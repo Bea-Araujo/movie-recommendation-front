@@ -1,16 +1,22 @@
 import React, { useContext } from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../../App'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
+import { getUsers } from '../../services/UsersApi'
 import s from './Login.module.css'
 
 export const Login = () => {
     const { user, setUser } = useContext(UserContext)
+    const navigate = useNavigate();
     const [data, setData] = useState({
         username: '',
         password: ''
     })
+
+    // const [isValid, setIsValid] = useState(false);
+    let isValid = false
+    const [error, setError] = useState('')
 
     const fields = [
         {
@@ -29,6 +35,23 @@ export const Login = () => {
         setData({ ...data, [keyValue]: value })
     }
 
+    async function validateUser() {
+        const users = await getUsers()
+        console.log(users)
+        const userInfo = users.filter((el) => el.USERNAME == data.username)
+
+        if (userInfo.length == 0) {
+            isValid = false;
+            setError('Usuário inválido')
+            return
+        }
+
+        const hasValidPassword = userInfo[0].PASSWORD == data.password
+        isValid = (hasValidPassword ? true : false)
+        setError(hasValidPassword ? '' : 'Senha Inválida')
+        return userInfo[0].USERID
+    }
+
     return (
         <div className={s.container}>
 
@@ -40,15 +63,20 @@ export const Login = () => {
                     })
                 }
 
-                <input type='submit' value='Entrar' onClick={(e) => {
+                <input type='submit' value='Entrar' onClick={async (e) => {
                     e.preventDefault()
-                    // validar se usuario existe no banco de dados
-                    // caso sim -> entrar no menu
-                    // caso não -> mostrar erro
-                    setUser(data.username)
-                    console.log(user)
+
+                    const userId = await validateUser()
+                    console.log(isValid)
+                    if (isValid) {
+                        console.log('a')
+                        setUser(userId)
+                        navigate('/feed')
+                    }
                 }} />
             </form>
+
+            <p>{error}</p>
 
             <p>
                 Não tem login? <Link to='/signup'>Cadastre-se</Link>

@@ -13,8 +13,6 @@ export const Feed = () => {
     const [posts, setPosts] = useState([])
     const [shownPosts, setShownPosts] = useState([])
 
-    const [filter, setFilter] = useState('all')
-
     const [hasPostChanged, setHasPostChanged] = useState(false)
 
     const [allFollowed, setAllFollowed] = useState([])
