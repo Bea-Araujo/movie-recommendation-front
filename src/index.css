@@ -1,8 +1,12 @@
-html,
-body {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 
@@ -21,4 +25,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --grey: #242424;
+  --dark-grey: #121212;
 }
