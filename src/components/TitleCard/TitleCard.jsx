@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { deletePost, putPost } from '../../services/PostsApi'
 import s from './TitleCard.module.css'
@@ -7,8 +7,15 @@ import { ReactComponent as Person } from '../../assets/icons/person.svg'
 import { ReactComponent as Trashcan } from '../../assets/icons/trashCan.svg'
 import { ReactComponent as Thumbsup } from '../../assets/icons/thumbsup.svg'
 import { ReactComponent as Thumbsdown } from '../../assets/icons/thumbsdown.svg'
+import { useContext } from 'react'
+import { UserContext } from '../../App'
+import { deleteFollow, getFollowsById, postNewFollow, putFollowsById } from '../../services/FollowsApi'
 
-export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPosts, listener, setListener }) => {
+export const TitleCard = ({ postid, status, title, followers, setListener }) => {
+    // const { user, setUser } = useContext(UserContext);
+
+    const userid = 1
+
     const [isClosed, setIsClosed] = useState(status == 'open' ? false : true)
     const [text, setText] = useState(status == 'open' ? 'OPEN' : 'CLOSED')
 
@@ -24,10 +31,28 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
     }
 
     async function deletePool(id) {
-        // setAllPosts(allPosts.filter((el) => el.POSTID == postid))
         setListener(true)
         deletePost(id)
     }
+
+    async function checkFollowExists() {
+        const doesExist = await getFollowsById(userid, postid)
+        console.log(doesExist)
+        return doesExist.length > 0 ? true : false;
+    }
+
+
+    useEffect(() => {
+        (async () => {
+            const exists = await getFollowsById(userid, postid)
+            if (exists.length > 0) {
+                setIsFollowing(true)
+                exists[0].LIKE == "1" ? setIsLiked(true) : setIsLiked(false);
+                exists[0].DISLIKE == "1" ? setIsDisliked(true) : setIsDisliked(false);
+            }
+        })()
+    }, [])
+
 
     return (
         <div className={s.card_container}>
@@ -60,10 +85,30 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
             <h2 className={s.card_title}>{title}</h2>
 
             <footer className={s.card_footer}>
-
+                <div className={s.card_footer__btn_blocker} style={{ display: isClosed ? 'block' : 'none' }}></div>
                 {/* botão para seguir */}
                 <button className={isFollowing ? s.btn_follow : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
-                    onClick={(e) => {
+                    onClick={async (e) => {
+                        if (!isFollowing == true) {
+
+                            const body = {
+                                userid: userid,
+                                postid: postid,
+                                like: '0',
+                                dislike: '0'
+                            }
+
+                            await checkFollowExists() ? putFollowsById(userid, postid, body) : postNewFollow(body)
+
+
+                        } else {
+                            deleteFollow(userid, postid)
+                        }
+
+                        if (isFollowing) {
+                            setIsLiked(false)
+                            setIsDisliked(false)
+                        }
                         setIsFollowing(!isFollowing)
                     }}>
                     <Person height='30px' width='30px'></Person>
@@ -71,7 +116,26 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
 
                 {/* botão para recomendar */}
                 <button className={isLiked ? s.btn_like : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
-                    onClick={(e) => {
+                    onClick={async (e) => {
+
+                        if (!isLiked == true) {
+
+                            const body = {
+                                userid: userid,
+                                postid: postid,
+                                like: '1',
+                                dislike: '0'
+                            }
+
+                            await checkFollowExists() ? putFollowsById(userid, postid, body) : postNewFollow(body)
+
+                        } else {
+                            const body = {
+                                like: '0',
+                            }
+                            putFollowsById(userid, postid, body)
+                        }
+
                         setIsLiked(!isLiked)
                         setIsDisliked(false)
                         setIsFollowing(true)
@@ -81,7 +145,26 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
 
                 {/* botão para não recomendar */}
                 <button className={isDisliked ? s.btn_dislike : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
-                    onClick={(e) => {
+                    onClick={async (e) => {
+
+                        if (!isDisliked == true) {
+
+                            const body = {
+                                userid: userid,
+                                postid: postid,
+                                like: '0',
+                                dislike: '1'
+                            }
+
+                            await checkFollowExists() ? putFollowsById(userid, postid, body) : postNewFollow(body)
+
+                        } else {
+                            const body = {
+                                dislike: '0',
+                            }
+                            putFollowsById(userid, postid, body)
+                        }
+
                         setIsDisliked(!isDisliked)
                         setIsLiked(false)
                         setIsFollowing(true)

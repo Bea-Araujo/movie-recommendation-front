@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://movie-recommendation-back.herokuapp.com/",
+    baseURL: "https://movie-recommendation-back.herokuapp.com/"
 })
 
 export const getAllPosts = async () => {
