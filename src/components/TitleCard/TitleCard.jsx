@@ -12,6 +12,10 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
     const [isClosed, setIsClosed] = useState(status == 'open' ? false : true)
     const [text, setText] = useState(status == 'open' ? 'OPEN' : 'CLOSED')
 
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [isLiked, setIsLiked] = useState(false)
+    const [isDisliked, setIsDisliked] = useState(false)
+
     async function closePool(id) {
         const closeBody = {
             status: "0"
@@ -56,16 +60,32 @@ export const TitleCard = ({ postid, status, title, followers, allPosts, setAllPo
             <h2 className={s.card_title}>{title}</h2>
 
             <footer className={s.card_footer}>
+
                 {/* botão para seguir */}
-                <button>
+                <button className={isFollowing ? s.btn_follow : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
+                    onClick={(e) => {
+                        setIsFollowing(!isFollowing)
+                    }}>
                     <Person height='30px' width='30px'></Person>
                 </button>
+
                 {/* botão para recomendar */}
-                <button>
+                <button className={isLiked ? s.btn_like : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
+                    onClick={(e) => {
+                        setIsLiked(!isLiked)
+                        setIsDisliked(false)
+                        setIsFollowing(true)
+                    }}>
                     <Thumbsup height='30px' width='30px'></Thumbsup>
                 </button>
+
                 {/* botão para não recomendar */}
-                <button>
+                <button className={isDisliked ? s.btn_dislike : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
+                    onClick={(e) => {
+                        setIsDisliked(!isDisliked)
+                        setIsLiked(false)
+                        setIsFollowing(true)
+                    }}>
                     <Thumbsdown height='30px' width='30px'></Thumbsdown>
                 </button>
             </footer>

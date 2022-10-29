@@ -71,3 +71,27 @@ button {
     gap: 20px;
     padding-bottom: 10px;
 }
+
+.card_footer>button {
+    height: 50px;
+    width: 50px;
+}
+
+.btn_follow,
+.btn_like,
+.btn_dislike {
+    border-radius: 50%;
+    transition: background-color 1s;
+}
+
+.btn_follow {
+    background-color: #3f88f6;
+}
+
+.btn_like {
+    background-color: #44df3e;
+}
+
+.btn_dislike {
+    background-color: #df3e3e;
+}
