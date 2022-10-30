@@ -52,7 +52,7 @@ export const Login = () => {
     return (
         <div className={s.container}>
 
-            <h1 className={s.title}>Movie Recommendation</h1>
+            <h1 className={s.title}>Login</h1>
             <form className={s.form_container}>
                 {
                     fields.map(({ title, type, keyValue }) => {
@@ -60,22 +60,21 @@ export const Login = () => {
                     })
                 }
 
-                <input type='submit' value='Entrar' onClick={async (e) => {
+                <input className={s.submit_btn} type='submit' value='Entrar' onClick={async (e) => {
                     e.preventDefault()
 
                     const userId = await validateUser()
                     console.log(isValid)
                     if (isValid) {
-                        setUser(userId)
                         localStorage.setItem('user', userId);
                         navigate('/feed')
                     }
                 }} />
             </form>
 
-            <p>{error}</p>
+            <p className={s.error_msg}>{error}</p>
 
-            <p>
+            <p className={s.signup_link}>
                 Não tem login? <Link to='/signup'>Cadastre-se</Link>
             </p>
         </div>
