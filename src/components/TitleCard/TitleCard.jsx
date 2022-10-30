@@ -6,8 +6,8 @@ import s from './TitleCard.module.css'
 
 import personsvg from '../../assets/icons/person.svg'
 import trashcansvg from '../../assets/icons/trashCan.svg'
-import thumbsupsvg from '../../assets/icons/thumbsup.svg'
-import thumbsdownsvg from '../../assets/icons/thumbsdown.svg'
+import thumbsupsvg from '../../assets/icons/thumbsUp.svg'
+import thumbsdownsvg from '../../assets/icons/thumbsDown.svg'
 import { deleteFollow, getFollowsById, postNewFollow, putFollowsById } from '../../services/FollowsApi'
 
 export const TitleCard = ({ postid, authorid, status, title, followers, listenerForChanges, fetchFollowsData, allFollowed, setAllFollowed }) => {
