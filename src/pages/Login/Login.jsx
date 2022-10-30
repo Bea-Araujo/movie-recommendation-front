@@ -1,20 +1,17 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { UserContext } from '../../App'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
 import { getUsers } from '../../services/UsersApi'
 import s from './Login.module.css'
 
 export const Login = () => {
-    const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const [data, setData] = useState({
         username: '',
         password: ''
     })
 
-    // const [isValid, setIsValid] = useState(false);
     let isValid = false
     const [error, setError] = useState('')
 
@@ -69,8 +66,8 @@ export const Login = () => {
                     const userId = await validateUser()
                     console.log(isValid)
                     if (isValid) {
-                        console.log('a')
                         setUser(userId)
+                        localStorage.setItem('user', userId);
                         navigate('/feed')
                     }
                 }} />

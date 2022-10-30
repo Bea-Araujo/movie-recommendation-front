@@ -3,29 +3,18 @@ import s from './Sidebar.module.css'
 import reactsvg from '../../assets/react.svg'
 import { Link } from 'react-router-dom'
 
-export const Sidebar = ({ allFollowed, allCreated, posts, setShownPosts, fetchCreatedPosts, fetchFollowsData }) => {
+export const Sidebar = ({ filterShownPosts, fetchCreatedPosts, fetchFollowsData }) => {
 
-    async function handleClick() {
+    async function fetchData() {
         await fetchCreatedPosts()
         await fetchFollowsData()
     }
 
-    function filter(value) {
-        const filteredShownPosts = posts.filter((el) => {
-            if (value == 'all') {
-                return true;
-            } else if (value == 'following') {
-                return allFollowed.includes(el.POSTID)
-            } else if (value == 'mine') {
-                console.log(allCreated)
-                return allCreated.includes(el.POSTID)
-            }
-
-        })
-
-
-        setShownPosts([...filteredShownPosts])
+    async function handleClick(value) {
+        await fetchData()
+        filterShownPosts(value)
     }
+
     return (
         <div className={s.container_sidebar}>
             <div className={s.user_info}>
@@ -34,20 +23,11 @@ export const Sidebar = ({ allFollowed, allCreated, posts, setShownPosts, fetchCr
             </div>
 
             <ul className={s.filter_list}>
-                <li onClick={async () => {
-                    await handleClick('all')
-                    filter('all')
-                }}>Todos</li>
+                <li onClick={() => { handleClick('all') }}>Todos</li>
 
-                <li onClick={async () => {
-                    await handleClick('following')
-                    filter('following')
-                }}>Seguindo</li>
+                <li onClick={() => handleClick('following')}>Seguindo</li>
 
-                <li onClick={async () => {
-                    await handleClick('mine')
-                    filter('mine')
-                }}>Minhas votações</li>
+                <li onClick={() => handleClick('mine')}>Minhas votações</li>
 
                 <li><Link to='/create'>Novo</Link></li>
             </ul>

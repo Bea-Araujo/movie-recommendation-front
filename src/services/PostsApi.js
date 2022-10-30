@@ -6,7 +6,6 @@ const api = axios.create({
 
 export const getAllPosts = async () => {
     const resp = await api.get('/post/all')
-    // console.log(resp.data)
     return resp.data;
 }
 
