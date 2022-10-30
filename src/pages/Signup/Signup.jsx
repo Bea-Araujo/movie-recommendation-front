@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
 import { getUsers, postNewUser } from '../../services/UsersApi'
+import s from './Signup.module.css'
 
 export const Signup = () => {
     let isUsernameTaken = false
@@ -15,6 +16,8 @@ export const Signup = () => {
         password: '',
         confirmPassword: ''
     })
+
+    const [error, setError] = useState('')
 
     const fields = [
         {
@@ -43,12 +46,13 @@ export const Signup = () => {
             fieldStyle[1] = {}
             fieldStyle[2] = {}
             isValidUser = true
+            setError('')
         } else {
             fieldStyle[1] = { border: '1px solid red' }
             fieldStyle[2] = { border: '1px solid red' }
             isValidUser = false
+            setError('Senhas diferentes')
         }
-        setFieldStyle([...fieldStyle])
     }
 
     function findBlankFields() {
@@ -57,11 +61,11 @@ export const Signup = () => {
             if (value == '') {
                 fieldStyle[fieldNum] = { border: '1px solid red' }
                 isValidUser = false
+                setError('Campo(s) vazio(s)')
             }
             else fieldStyle[fieldNum] = {}
             fieldNum++
         }
-        setFieldStyle([...fieldStyle])
     }
 
     async function checkUsernameAvailability() {
@@ -71,14 +75,18 @@ export const Signup = () => {
         })
 
         searchForUsername.length > 0 ? isUsernameTaken = true : isUsernameTaken = false
-        isUsernameTaken ? fieldStyle[0] = { border: '1px solid red' } : fieldStyle[0] = {};
-        setFieldStyle([...fieldStyle])
+
+        if (isUsernameTaken) {
+            fieldStyle[0] = { border: '1px solid red' }
+            setError('Usuário inválido')
+        }
+        else fieldStyle[0] = {};
 
     }
 
     async function validateFields() {
-        comparePasswords()
         findBlankFields()
+        comparePasswords()
 
         if (data.username != '') {
             await checkUsernameAvailability()
@@ -87,22 +95,26 @@ export const Signup = () => {
                 navigate('/login')
             }
         }
+        setFieldStyle([...fieldStyle])
     }
 
     return (
-        <div>Signup
-            <form>
+        <div className={s.container}>
+            <h1 className={s.title}>Signup</h1>
+            <form className={s.form_container}>
                 {
                     fields.map(({ title, type, keyValue, style }, i) => {
                         return (<Fieldset title={title} type={type} handleChange={handleChange} keyValue={keyValue} key={keyValue} style={fieldStyle[i]} />)
                     })
                 }
 
-                <input type='submit' value='Cadastrar' onClick={(e) => {
+                <input className={s.submit_btn} type='submit' value='Cadastrar' onClick={(e) => {
                     e.preventDefault()
                     validateFields()
                 }} />
             </form>
+
+            <p className={s.error_msg}>{error}</p>
 
         </div>
     )
