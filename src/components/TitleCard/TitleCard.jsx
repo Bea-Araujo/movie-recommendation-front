@@ -9,6 +9,7 @@ import trashcansvg from '../../assets/icons/trashCan.svg'
 import thumbsupsvg from '../../assets/icons/thumbsUp.svg'
 import thumbsdownsvg from '../../assets/icons/thumbsDown.svg'
 import { deleteFollow, getFollowsById, postNewFollow, putFollowsById } from '../../services/FollowsApi'
+import { ReactionBtn } from '../ReactionBtn/ReactionBtn'
 
 export const TitleCard = ({ postid, authorid, status, title, followers, listenerForChanges, fetchFollowsData, allFollowed, setAllFollowed }) => {
 
@@ -26,6 +27,12 @@ export const TitleCard = ({ postid, authorid, status, title, followers, listener
             status: "0"
         }
         putPost(id, closeBody)
+    }
+
+    function closePost() {
+        setIsClosed(true)
+        setText('CLOSED')
+        closePool(postid)
     }
 
     async function deletePool(id) {
@@ -71,7 +78,27 @@ export const TitleCard = ({ postid, authorid, status, title, followers, listener
         allFollowed.push(postid)
     }
 
-    async function handleFollow() {
+    async function handleLike() {
+        await handleReactions(isLiked, 'like', 'dislike')
+
+        setAllFollowed([...allFollowed])
+
+        setIsLiked(!isLiked)
+        setIsDisliked(false)
+        setIsFollowing(true)
+    }
+
+    async function handleDislike() {
+        await handleReactions(isDisliked, 'dislike', 'like')
+
+        setAllFollowed([...allFollowed])
+
+        setIsDisliked(!isDisliked)
+        setIsLiked(false)
+        setIsFollowing(true)
+    }
+
+    async function handleFollowData() {
         if (isFollowing) {
             deleteFollow(user, postid)
             allFollowed = allFollowed.filter((el) => {
@@ -91,6 +118,17 @@ export const TitleCard = ({ postid, authorid, status, title, followers, listener
         allFollowed.push(postid)
     }
 
+    async function handleFollow() {
+        await handleFollowData()
+        setAllFollowed([...allFollowed])
+
+        if (isFollowing) {
+            setIsLiked(false)
+            setIsDisliked(false)
+        }
+        setIsFollowing(!isFollowing)
+    }
+
     useEffect(() => {
         getFollowsInfo()
     }, [])
@@ -105,13 +143,7 @@ export const TitleCard = ({ postid, authorid, status, title, followers, listener
                     {text}
                 </p>
 
-                <p className={s.close_btn} style={{ display: isClosed || authorid != user ? 'none' : 'block' }} onClick={
-                    (e) => {
-                        setIsClosed(true)
-                        setText('CLOSED')
-                        closePool(postid)
-                    }
-                }>
+                <p className={s.close_btn} style={{ display: isClosed || authorid != user ? 'none' : 'block' }} onClick={() => closePost()}>
                     CLOSE
                 </p>
 
@@ -130,53 +162,14 @@ export const TitleCard = ({ postid, authorid, status, title, followers, listener
                 </button>
 
                 {/* botão para seguir */}
-                <button className={isFollowing ? s.btn_follow : 'none'}
-                    onClick={async (e) => {
-
-                        handleFollow()
-                        setAllFollowed([...allFollowed])
-
-                        if (isFollowing) {
-                            setIsLiked(false)
-                            setIsDisliked(false)
-                        }
-                        setIsFollowing(!isFollowing)
-
-                    }}>
-                    <img src={personsvg} />
-                </button>
+                <ReactionBtn isReaction={isFollowing} handleClick={handleFollow} icon={personsvg} style={s.btn_follow} />
 
                 {/* botão para recomendar */}
-                <button className={isLiked ? s.btn_like : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
-                    onClick={async (e) => {
-
-                        handleReactions(isLiked, 'like', 'dislike')
-
-                        setAllFollowed([...allFollowed])
-
-                        setIsLiked(!isLiked)
-                        setIsDisliked(false)
-                        setIsFollowing(true)
-
-                    }}>
-                    <img src={thumbsupsvg} />
-                </button>
+                <ReactionBtn isReaction={isLiked} handleClick={handleLike} icon={thumbsupsvg} style={s.btn_like} />
 
                 {/* botão para não recomendar */}
-                <button className={isDisliked ? s.btn_dislike : 'none'} style={{ cursor: isClosed ? 'not-allowed' : 'pointer' }}
-                    onClick={async (e) => {
+                <ReactionBtn isReaction={isDisliked} handleClick={handleDislike} icon={thumbsdownsvg} style={s.btn_dislike} />
 
-                        handleReactions(isDisliked, 'dislike', 'like')
-
-                        setAllFollowed([...allFollowed])
-
-                        setIsDisliked(!isDisliked)
-                        setIsLiked(false)
-                        setIsFollowing(true)
-
-                    }}>
-                    <img src={thumbsdownsvg} />
-                </button>
             </footer>
 
 

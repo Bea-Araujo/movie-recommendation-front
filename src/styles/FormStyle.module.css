@@ -27,6 +27,7 @@
     color: white;
     transition: 0.5s;
     margin-bottom: 1.5em;
+    cursor: pointer;
 }
 
 .submit_btn:hover {

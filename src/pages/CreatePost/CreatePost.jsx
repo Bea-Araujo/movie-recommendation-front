@@ -1,17 +1,17 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../../App'
+import { ErrorMsg } from '../../components/ErrorMsg/ErrorMsg'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
+import { SubmitBtn } from '../../components/SubmitBtn/SubmitBtn'
 import { postNewPost } from '../../services/PostsApi'
-import s from './CreatePost.module.css'
+import s from '../../styles/FormStyle.module.css'
 
 export const CreatePost = () => {
-    // const { user, setUser } = useContext(UserContext)
     const user = 1
 
-    let isValidInput = true
     const navigate = useNavigate()
 
+    const [error, setError] = useState('')
     const [fieldStyle, setFieldStyle] = useState([{}])
 
     const [data, setData] = useState({
@@ -34,6 +34,18 @@ export const CreatePost = () => {
         setData({ ...data, [keyValue]: value })
     }
 
+    function validateInput() {
+        if (data.title == '') {
+            setFieldStyle([{ border: '1px solid red' }])
+            setError('Campo inválido')
+            return
+        }
+
+        setFieldStyle({})
+        sendNewPost(data)
+        navigate('/feed')
+    }
+
     return (
         <div className={s.container}>
 
@@ -45,18 +57,9 @@ export const CreatePost = () => {
                     })
                 }
 
-                <input type='submit' value='Criar' onClick={(e) => {
-                    e.preventDefault()
-
-                    if (data.title == '') {
-                        setFieldStyle([{ border: '1px solid red' }])
-                    } else {
-                        setFieldStyle({})
-                        sendNewPost(data)
-                        navigate('/feed')
-                    }
-                }} />
+                <SubmitBtn style={s.submit_btn} text='Criar' handleClick={validateInput} />
             </form>
+            <ErrorMsg style={s.error_msg} error={error} />
         </div>
     )
 }

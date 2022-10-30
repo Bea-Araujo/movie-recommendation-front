@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
+import { SubmitBtn } from '../../components/SubmitBtn/SubmitBtn'
 import { getUsers, postNewUser } from '../../services/UsersApi'
-import s from './Signup.module.css'
+import s from '../../styles/FormStyle.module.css'
 
 export const Signup = () => {
     let isUsernameTaken = false
@@ -92,7 +93,7 @@ export const Signup = () => {
             await checkUsernameAvailability()
             if (!isUsernameTaken && isValidUser) {
                 postNewUser(data)
-                navigate('/login')
+                navigate('/')
             }
         }
         setFieldStyle([...fieldStyle])
@@ -100,21 +101,20 @@ export const Signup = () => {
 
     return (
         <div className={s.container}>
+
             <h1 className={s.title}>Signup</h1>
+
             <form className={s.form_container}>
                 {
-                    fields.map(({ title, type, keyValue, style }, i) => {
+                    fields.map(({ title, type, keyValue }, i) => {
                         return (<Fieldset title={title} type={type} handleChange={handleChange} keyValue={keyValue} key={keyValue} style={fieldStyle[i]} />)
                     })
                 }
 
-                <input className={s.submit_btn} type='submit' value='Cadastrar' onClick={(e) => {
-                    e.preventDefault()
-                    validateFields()
-                }} />
+                <SubmitBtn style={s.submit_btn} text='Cadastrar' handleClick={validateFields} />
             </form>
 
-            <p className={s.error_msg}>{error}</p>
+            <ErrorMsg style={s.error_msg} error={error} />
 
         </div>
     )

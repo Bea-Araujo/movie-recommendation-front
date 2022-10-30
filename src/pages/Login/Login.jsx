@@ -1,9 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ErrorMsg } from '../../components/ErrorMsg/ErrorMsg'
 import { Fieldset } from '../../components/Fieldset/Fieldset'
+import { SubmitBtn } from '../../components/SubmitBtn/SubmitBtn'
 import { getUsers } from '../../services/UsersApi'
-import s from './Login.module.css'
+import s from '../../styles/FormStyle.module.css'
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -49,6 +51,14 @@ export const Login = () => {
         return userInfo[0].USERID
     }
 
+    async function handleSignIn() {
+        const userId = await validateUser()
+        if (isValid) {
+            localStorage.setItem('user', userId);
+            navigate('/feed')
+        }
+    }
+
     return (
         <div className={s.container}>
 
@@ -60,19 +70,10 @@ export const Login = () => {
                     })
                 }
 
-                <input className={s.submit_btn} type='submit' value='Entrar' onClick={async (e) => {
-                    e.preventDefault()
-
-                    const userId = await validateUser()
-                    console.log(isValid)
-                    if (isValid) {
-                        localStorage.setItem('user', userId);
-                        navigate('/feed')
-                    }
-                }} />
+                <SubmitBtn style={s.submit_btn} text={'Entrar'} handleClick={handleSignIn} />
             </form>
 
-            <p className={s.error_msg}>{error}</p>
+            <ErrorMsg style={s.error_msg} error={error} />
 
             <p className={s.signup_link}>
                 Não tem login? <Link to='/signup'>Cadastre-se</Link>
