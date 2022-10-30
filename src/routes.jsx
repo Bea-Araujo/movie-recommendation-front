@@ -9,7 +9,7 @@ export const Routes = () => {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path='/login' element={<Login />} />
+                <Route path='/' element={<Login />} />
                 <Route path='/signup' element={<Signup />} />
                 <Route path='/feed' element={<Feed />} />
                 <Route path='/create' element={<CreatePost />} />
