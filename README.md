@@ -31,3 +31,7 @@ Guia de download
   
   O back-end pode ser encontrado no seguinte repositório:
   [back-end](https://github.com/Bea-Araujo/movie-recommendation)
+  
+  Para acessar a plataforma no vercel crie um novo usuário ou utilize o usuário demo:
+  * username: admin
+  * password: 123
